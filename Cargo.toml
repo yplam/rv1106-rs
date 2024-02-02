@@ -1,0 +1,22 @@
+[workspace]
+resolver = "2"
+
+members = [
+    "rv1106-sys",
+]
+
+exclude = [
+    "image-builder/**",
+]
+
+[workspace.package]
+edition = "2021"
+
+[profile.release]
+strip = true
+opt-level = "z"
+lto = false
+panic = "abort"
+debug = false
+debug-assertions = false
+codegen-units = 1

@@ -1,0 +1,12 @@
+[package]
+name = "rv1106-sys"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0"
+time = "0.3.32"
+
+[build-dependencies]
+bindgen = "0.69.2"
+cc = "1.0"

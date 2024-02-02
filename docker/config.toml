@@ -1,0 +1,9 @@
+change-id = 116998
+
+[build]
+target = ["armv7-unknown-linux-uclibceabihf"]
+build-stage = 2
+
+[target.armv7-unknown-linux-uclibceabihf]
+linker = "arm-rockchip830-linux-uclibcgnueabihf-gcc"
+cc = "arm-rockchip830-linux-uclibcgnueabihf-gcc"

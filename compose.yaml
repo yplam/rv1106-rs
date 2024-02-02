@@ -1,0 +1,7 @@
+services:
+  rv1106:
+    build:
+      context: ./docker
+    container_name: rv1106
+    volumes:
+      - ./:/src
