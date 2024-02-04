@@ -14172,7 +14172,6 @@ pub struct rkVENC_PACK_S {
     pub u32Offset: RK_U32,
     pub u32DataNum: RK_U32,
     pub stPackInfo: [VENC_PACK_INFO_S; 8usize],
-    pData: (),
 }
 
 #[test]
@@ -29514,11 +29513,13 @@ extern "C" {
 }
 
 extern "C" {
+    #[doc = " @brief Create VENC_STREAM_S and allocate memory\n\n @return VENC_STREAM_S*"]
     #[link_name = "\u{1}_Z18newVencStreamFramev"]
     pub fn newVencStreamFrame() -> *mut VENC_STREAM_S;
 }
 
 extern "C" {
+    #[doc = " @brief Free VENC_STREAM_S and release memory\n\n @param stFrame"]
     #[link_name = "\u{1}_Z19freeVencStreamFrameP15rkVENC_STREAM_S"]
     pub fn freeVencStreamFrame(stFrame: *mut VENC_STREAM_S);
 }

@@ -51,6 +51,8 @@ fn main() {
     println!("cargo:rustc-link-lib=static=rockit");
     println!("cargo:rustc-link-lib=static=rockchip_mpp");
     println!("cargo:rustc-link-lib=static=rga");
+    println!("cargo:rustc-link-lib=static=flatccrt");
+    println!("cargo:rustc-link-lib=static=rknnmrt");
     // println!("cargo:rustc-link-lib=static=rkaiq");
     // println!("cargo:rustc-link-lib=static=smartIr");
 
@@ -62,28 +64,32 @@ fn main() {
     println!("cargo:rustc-link-lib=atomic");
 
     println!("cargo:rerun-if-changed=rockit.hpp");
+    println!("cargo:rerun-if-changed=rknn.hpp");
 
-    let builder = bindgen::Builder::default()
-        .clang_arg(format!("-I{}/usr/include", cc_sysroot.to_str().unwrap()))
-        .clang_arg(format!("-I{}", toolchain_gcc_include_dir.to_str().unwrap()))
-        .clang_arg(format!("-I{}/include", work_path))
-        .clang_arg(format!("-I{}/include/rockit", work_path))
-        .clang_arg(format!("-I{}/include/mpp", work_path))
-        .clang_arg("-std=c++11")
-        .clang_arg("-mfloat-abi=hard")
-        .clang_arg("-x")
-        .clang_arg("c++")
-        .clang_arg("-DRGA_CURRENT_API_HEADER_VERSION=RGA2-Enhance")
-        .clang_arg("-march=armv7")
-        .clang_arg("-fPIC")
-        .derive_default(true);
-    let bindings = builder
-        .header("rockit.hpp")
-        .generate()
-        // Unwrap the Result and panic on failure.
-        .expect("Unable to generate bindings");
+    for build_lib in ["rockit", "rknn"] {
+        let builder = bindgen::Builder::default()
+            .clang_arg(format!("-I{}/usr/include", cc_sysroot.to_str().unwrap()))
+            .clang_arg(format!("-I{}", toolchain_gcc_include_dir.to_str().unwrap()))
+            .clang_arg(format!("-I{}/include", work_path))
+            .clang_arg(format!("-I{}/include/rockit", work_path))
+            .clang_arg(format!("-I{}/include/rknn", work_path))
+            .clang_arg(format!("-I{}/include/mpp", work_path))
+            .clang_arg("-std=c++11")
+            .clang_arg("-mfloat-abi=hard")
+            .clang_arg("-x")
+            .clang_arg("c++")
+            .clang_arg("-DRGA_CURRENT_API_HEADER_VERSION=RGA2-Enhance")
+            .clang_arg("-march=armv7")
+            .clang_arg("-fPIC")
+            .derive_default(true);
+        let bindings = builder
+            .header(format!("{}.hpp", build_lib))
+            .generate()
+            // Unwrap the Result and panic on failure.
+            .expect("Unable to generate bindings");
 
-    bindings
-        .write_to_file(out_path.join("rockit_bindings.rs"))
-        .expect("Couldn't write bindings!");
+        bindings
+            .write_to_file(out_path.join(format!("{}_bindings.rs", build_lib)))
+            .expect("Couldn't write bindings!");
+    }
 }

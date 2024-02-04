@@ -4,4 +4,4 @@ services:
       context: ./docker
     container_name: rv1106
     volumes:
-      - ./:/src
+      - ./:/app

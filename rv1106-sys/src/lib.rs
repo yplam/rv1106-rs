@@ -3,6 +3,7 @@
 #![allow(non_snake_case)]
 
 pub mod rockit;
+pub mod rknn;
 
 #[macro_export]
 /// helper to check the return value of RK_XXX functions

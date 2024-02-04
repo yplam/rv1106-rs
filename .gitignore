@@ -2,3 +2,4 @@
 /src
 .idea/
 /image-builder
+/docker/*.xz

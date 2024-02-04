@@ -51,12 +51,12 @@ RUN set -eux; \
 RUN rustup toolchain link rv1106 /opt/rust_rv1106
 RUN rustup component add rustfmt
 
-RUN mkdir /src
+RUN mkdir /app
 RUN groupadd -g $GID -o $UNAME \
     && useradd -m -u $UID -g $GID -o -s /bin/zsh $UNAME
 
 USER $UNAME
 RUN wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh || true
 
-WORKDIR /src
+WORKDIR /app
 ENTRYPOINT ["tail", "-f", "/dev/null"]
