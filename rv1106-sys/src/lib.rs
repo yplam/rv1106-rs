@@ -11,7 +11,7 @@ macro_rules! rk_check_err {
     ($fn:ident($($arg:tt)*)) => {
         unsafe{
             let check_code_ret = $fn($($arg)*);
-            if check_code_ret as u32 != RK_SUCCESS {
+            if check_code_ret as u32 != 0 {
                 anyhow::bail!("{} Err {}", stringify!($fn), check_code_ret)
             }
         }
