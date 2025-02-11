@@ -19,19 +19,23 @@ Rust bindings for Rockchip rv1106
 export PATH=/home/xxx/xxx/tools/linux/toolchain/arm-rockchip830-linux-uclibcgnueabihf/bin:$PATH
 git clone https://github.com/rust-lang/rust.git
 cd rust
-git checkout 1.72.1                     
+git checkout 1.84.1                     
 git submodule update --init --recursive
 # ./x setup --target=armv7-unknown-linux-uclibceabihf
 ./x check --target=armv7-unknown-linux-uclibceabihf
 ./x build library --target=armv7-unknown-linux-uclibceabihf
 ./x build --stage 2 --target=armv7-unknown-linux-uclibceabihf
-mv build/host/stage2 rust-1.72.1-rv1106
-tar -cvJf rust-1.72.1-rv1106.tar.xz rust-1.72.1-rv1106
+mv build/host/stage2 rust-1.84.1-rv1106
+tar -cvJf rust-1.84.1-rv1106.tar.xz rust-1.84.1-rv1106
+
+# use
+rustup toolchain link rv1106 /opt/rust-1.84.1-rv1106
 ```
+
 config.toml
 
 ``` toml
-changelog-seen = 2
+change-id = 133207
 [build]
 target = ["armv7-unknown-linux-uclibceabihf"]
 build-stage = 2
@@ -51,5 +55,6 @@ compression-profile = "balanced"
 [target.armv7-unknown-linux-uclibceabihf]
 linker = "arm-rockchip830-linux-uclibcgnueabihf-gcc"
 cc = "arm-rockchip830-linux-uclibcgnueabihf-gcc"
+
 
 ```

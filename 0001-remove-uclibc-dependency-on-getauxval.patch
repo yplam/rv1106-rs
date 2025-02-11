@@ -1,0 +1,65 @@
+From 448035c803fbb1f13ea6aec0df6b24685550dbc4 Mon Sep 17 00:00:00 2001
+From: yplam <yplam@yplam.com>
+Date: Tue, 11 Feb 2025 18:24:21 +0800
+Subject: [PATCH] remove uclibc dependency on getauxval
+
+---
+ compiler/rustc_driver_impl/src/signal_handler.rs | 8 +++++++-
+ library/std/src/sys/pal/unix/stack_overflow.rs   | 8 +++++++-
+ 2 files changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/compiler/rustc_driver_impl/src/signal_handler.rs b/compiler/rustc_driver_impl/src/signal_handler.rs
+index d4f8199390c..c560e49c979 100644
+--- a/compiler/rustc_driver_impl/src/signal_handler.rs
++++ b/compiler/rustc_driver_impl/src/signal_handler.rs
+@@ -132,7 +132,7 @@ pub(super) fn install() {
+ }
+ 
+ /// Modern kernels on modern hardware can have dynamic signal stack sizes.
+-#[cfg(any(target_os = "linux", target_os = "android"))]
++#[cfg(all(any(target_os = "linux", target_os = "android"), not(target_env = "uclibc")))]
+ fn min_sigstack_size() -> usize {
+     const AT_MINSIGSTKSZ: core::ffi::c_ulong = 51;
+     let dynamic_sigstksz = unsafe { libc::getauxval(AT_MINSIGSTKSZ) };
+@@ -142,6 +142,12 @@ fn min_sigstack_size() -> usize {
+     libc::MINSIGSTKSZ.max(dynamic_sigstksz as _)
+ }
+ 
++/// Fallback for uClibc, which does not support getauxval.
++#[cfg(all(any(target_os = "linux", target_os = "android"), target_env = "uclibc"))]
++fn min_sigstack_size() -> usize {
++    libc::MINSIGSTKSZ
++}
++
+ /// Not all OS support hardware where this is needed.
+ #[cfg(not(any(target_os = "linux", target_os = "android")))]
+ fn min_sigstack_size() -> usize {
+diff --git a/library/std/src/sys/pal/unix/stack_overflow.rs b/library/std/src/sys/pal/unix/stack_overflow.rs
+index 69b31da427f..713da84fdbe 100644
+--- a/library/std/src/sys/pal/unix/stack_overflow.rs
++++ b/library/std/src/sys/pal/unix/stack_overflow.rs
+@@ -263,7 +263,7 @@ pub unsafe fn drop_handler(data: *mut libc::c_void) {
+     }
+ 
+     /// Modern kernels on modern hardware can have dynamic signal stack sizes.
+-    #[cfg(any(target_os = "linux", target_os = "android"))]
++    #[cfg(all(any(target_os = "linux", target_os = "android"), not(target_env = "uclibc")))]
+     fn sigstack_size() -> usize {
+         let dynamic_sigstksz = unsafe { libc::getauxval(libc::AT_MINSIGSTKSZ) };
+         // If getauxval couldn't find the entry, it returns 0,
+@@ -272,6 +272,12 @@ fn sigstack_size() -> usize {
+         libc::SIGSTKSZ.max(dynamic_sigstksz as _)
+     }
+ 
++    /// Fallback for uClibc, which does not support getauxval.
++    #[cfg(all(any(target_os = "linux", target_os = "android"), target_env = "uclibc"))]
++    fn sigstack_size() -> usize {
++        libc::SIGSTKSZ
++    }
++
+     /// Not all OS support hardware where this is needed.
+     #[cfg(not(any(target_os = "linux", target_os = "android")))]
+     fn sigstack_size() -> usize {
+-- 
+2.47.1
+
