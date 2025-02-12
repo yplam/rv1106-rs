@@ -1,0 +1,25 @@
+change-id = 133207
+
+[build]
+docs = false
+extended = true
+
+[llvm]
+download-ci-llvm = false
+
+[rust]
+channel = "nightly"
+download-rustc = false
+
+[dist]
+compression-profile = "balanced"
+src-tarball = false
+compression-formats = ["xz"]
+
+[install]
+prefix = "/opt/rust-rv110x"
+sysconfdir = "etc"
+
+[target.armv7-unknown-linux-uclibceabihf]
+linker = "arm-rockchip830-linux-uclibcgnueabihf-gcc"
+cc = "arm-rockchip830-linux-uclibcgnueabihf-gcc"

@@ -1,0 +1,4 @@
+[submodule "third_party/aws-lc-rs"]
+	path = third_party/aws-lc-rs
+	url = https://github.com/aws/aws-lc-rs.git
+	branch = v1.12.2

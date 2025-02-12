@@ -3,6 +3,7 @@ resolver = "2"
 
 members = [
     "rv1106-sys",
+    "examples"
 ]
 
 exclude = [
@@ -20,3 +21,6 @@ panic = "abort"
 debug = false
 debug-assertions = false
 codegen-units = 1
+
+[patch.crates-io]
+aws-lc-rs = { path = "./third_party/aws-lc-rs/aws-lc-rs" }

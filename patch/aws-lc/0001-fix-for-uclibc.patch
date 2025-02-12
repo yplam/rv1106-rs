@@ -1,0 +1,38 @@
+From 8864f4b73db8146b3d1274f01e962204392bbcac Mon Sep 17 00:00:00 2001
+From: yplam <yplam@yplam.com>
+Date: Wed, 12 Feb 2025 17:17:52 +0800
+Subject: [PATCH] fix for uclibc
+
+---
+ crypto/fipsmodule/cpucap/cpu_arm_linux.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/crypto/fipsmodule/cpucap/cpu_arm_linux.c b/crypto/fipsmodule/cpucap/cpu_arm_linux.c
+index a2c5a1809..00390de0d 100644
+--- a/crypto/fipsmodule/cpucap/cpu_arm_linux.c
++++ b/crypto/fipsmodule/cpucap/cpu_arm_linux.c
+@@ -18,7 +18,9 @@
+     !defined(OPENSSL_STATIC_ARMCAP)
+ #include <errno.h>
+ #include <fcntl.h>
++#if !defined(__UCLIBC__)
+ #include <sys/auxv.h>
++#endif
+ #include <sys/types.h>
+ #include <unistd.h>
+ 
+@@ -109,7 +111,11 @@ void OPENSSL_cpuid_setup(void) {
+   cpuinfo.len = cpuinfo_len;
+ 
+   // Matching OpenSSL, only report other features if NEON is present.
++  #if defined(__UCLIBC__)
++  unsigned long hwcap = 0;
++  #else
+   unsigned long hwcap = getauxval(AT_HWCAP);
++  #endif
+   if (hwcap & HWCAP_NEON) {
+     OPENSSL_armcap_P |= ARMV7_NEON;
+ 
+-- 
+2.47.1
+
